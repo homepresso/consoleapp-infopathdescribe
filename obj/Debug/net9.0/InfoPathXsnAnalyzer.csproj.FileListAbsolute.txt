@@ -1,0 +1,17 @@
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\bin\Debug\net9.0\InfoPathXsnAnalyzer.exe
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\bin\Debug\net9.0\InfoPathXsnAnalyzer.deps.json
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\bin\Debug\net9.0\InfoPathXsnAnalyzer.runtimeconfig.json
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\bin\Debug\net9.0\InfoPathXsnAnalyzer.dll
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\bin\Debug\net9.0\InfoPathXsnAnalyzer.pdb
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\bin\Debug\net9.0\Newtonsoft.Json.dll
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\obj\Debug\net9.0\InfoPathXsnAnalyzer.csproj.AssemblyReference.cache
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\obj\Debug\net9.0\InfoPathXsnAnalyzer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\obj\Debug\net9.0\InfoPathXsnAnalyzer.AssemblyInfoInputs.cache
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\obj\Debug\net9.0\InfoPathXsnAnalyzer.AssemblyInfo.cs
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\obj\Debug\net9.0\InfoPathXsnAnalyzer.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\obj\Debug\net9.0\InfoPath.C8A8DE3F.Up2Date
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\obj\Debug\net9.0\InfoPathXsnAnalyzer.dll
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\obj\Debug\net9.0\refint\InfoPathXsnAnalyzer.dll
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\obj\Debug\net9.0\InfoPathXsnAnalyzer.pdb
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\obj\Debug\net9.0\InfoPathXsnAnalyzer.genruntimeconfig.cache
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\obj\Debug\net9.0\ref\InfoPathXsnAnalyzer.dll
