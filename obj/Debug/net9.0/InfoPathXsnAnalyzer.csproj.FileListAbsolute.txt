@@ -15,3 +15,4 @@ C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\obj\Debug\net9.0\refint\Inf
 C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\obj\Debug\net9.0\InfoPathXsnAnalyzer.pdb
 C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\obj\Debug\net9.0\InfoPathXsnAnalyzer.genruntimeconfig.cache
 C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\obj\Debug\net9.0\ref\InfoPathXsnAnalyzer.dll
+C:\Users\Administrator\Documents\InfoPathXsnAnalyzer\obj\Debug\net9.0\InfoPathXsnAnalyzer.sourcelink.json

@@ -374,24 +374,67 @@ namespace InfoPathXsnAnalyzer
             return dict.Values.ToList();
         }
 
+
         private void AddFormMetadata(InfoPathFormDefinition formDef)
         {
+            // Count all controls (excluding merged labels)
+            var allControls = GetAllControlsFromAllViews(formDef);
+
+            // Count repeating sections from multiple sources with debugging
+            var repeatingSectionCount = 0;
+
+            // 1. Count sections with type "repeating"
+            var repeatingSections = formDef.Views
+                .SelectMany(v => v.Sections)
+                .Where(s => s.Type == "repeating")
+                .ToList();
+            repeatingSectionCount += repeatingSections.Count;
+
+            Console.WriteLine($"Found {repeatingSections.Count} repeating sections:");
+            foreach (var section in repeatingSections)
+            {
+                Console.WriteLine($"  - {section.Name} (Type: {section.Type})");
+            }
+
+            // 2. Count RepeatingTable controls
+            var repeatingTables = allControls
+                .Where(c => c.Type == "RepeatingTable")
+                .ToList();
+            repeatingSectionCount += repeatingTables.Count;
+
+            Console.WriteLine($"Found {repeatingTables.Count} repeating tables:");
+            foreach (var table in repeatingTables)
+            {
+                Console.WriteLine($"  - {table.Name} (Label: {table.Label})");
+            }
+
+            // 3. Count any other repeating sections that might be in controls
+            var otherRepeating = allControls
+                .Where(c => c.Type == "RepeatingSection")
+                .ToList();
+            repeatingSectionCount += otherRepeating.Count;
+
+            Console.WriteLine($"Found {otherRepeating.Count} other repeating sections:");
+            foreach (var other in otherRepeating)
+            {
+                Console.WriteLine($"  - {other.Name} (Label: {other.Label})");
+            }
+
+            Console.WriteLine($"Total repeating sections/tables: {repeatingSectionCount}");
+
             formDef.Metadata = new FormMetadata
             {
-                TotalControls = formDef.Views.Sum(v => v.Controls.Count(c => !c.IsMergedIntoParent)),
+                TotalControls = allControls.Count(c => !c.IsMergedIntoParent),
                 TotalSections = formDef.Views
                     .SelectMany(v => v.Sections)
                     .Select(s => s.Name)
                     .Distinct()
                     .Count(),
                 DynamicSectionCount = formDef.DynamicSections.Count,
-                RepeatingSectionCount = formDef.Views
-                    .SelectMany(v => v.Sections)
-                    .Count(s => s.Type == "repeating"),
+                RepeatingSectionCount = repeatingSectionCount,
                 ConditionalFields = formDef.ConditionalVisibility.Keys.ToList()
             };
         }
-
         private void ExtractUsingExpandExe(string cabFile, string destFolder)
         {
             var startInfo = new System.Diagnostics.ProcessStartInfo
