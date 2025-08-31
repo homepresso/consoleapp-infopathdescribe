@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("InfoPathXsnAnalyzer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9159183fd7f87aad6d0f11d0c746259efad4d19f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f73b711439ee94214818c321484a51a264073d85")]
 [assembly: System.Reflection.AssemblyProductAttribute("InfoPathXsnAnalyzer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("InfoPathXsnAnalyzer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
