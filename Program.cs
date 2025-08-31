@@ -343,7 +343,7 @@ namespace InfoPathXsnAnalyzer
                 string colName = string.IsNullOrWhiteSpace(ctrl.Name) ? ctrl.Binding : ctrl.Name;
                 if (string.IsNullOrWhiteSpace(colName)) continue;
 
-                string repeating = ctrl.ParentSection;
+                string repeating = ctrl.RepeatingSectionName ?? "";
 
                 var key = (colName, repeating);
                 if (!dict.ContainsKey(key))
@@ -353,7 +353,7 @@ namespace InfoPathXsnAnalyzer
                         ColumnName = colName,
                         Type = ctrl.Type,
                         RepeatingSection = repeating,
-                        IsRepeating = ctrl.SectionType == "repeating",
+                        IsRepeating = ctrl.IsInRepeatingSection,
                         RepeatingSectionPath = repeating,
                         DisplayName = ctrl.Label
                     };
@@ -380,45 +380,17 @@ namespace InfoPathXsnAnalyzer
             // Count all controls (excluding merged labels)
             var allControls = GetAllControlsFromAllViews(formDef);
 
-            // Count repeating sections from multiple sources with debugging
-            var repeatingSectionCount = 0;
-
-            // 1. Count sections with type "repeating"
-            var repeatingSections = formDef.Views
+            // Count all sections marked as "repeating" type (including conditional-in-repeating which we now treat as repeating)
+            var repeatingSectionCount = formDef.Views
                 .SelectMany(v => v.Sections)
-                .Where(s => s.Type == "repeating")
-                .ToList();
-            repeatingSectionCount += repeatingSections.Count;
+                .Where(s => s.Type == "repeating" || s.Type == "conditional-in-repeating")
+                .Count();
 
-            Console.WriteLine($"Found {repeatingSections.Count} repeating sections:");
-            foreach (var section in repeatingSections)
-            {
-                Console.WriteLine($"  - {section.Name} (Type: {section.Type})");
-            }
-
-            // 2. Count RepeatingTable controls
+            // Count RepeatingTable controls
             var repeatingTables = allControls
                 .Where(c => c.Type == "RepeatingTable")
-                .ToList();
-            repeatingSectionCount += repeatingTables.Count;
-
-            Console.WriteLine($"Found {repeatingTables.Count} repeating tables:");
-            foreach (var table in repeatingTables)
-            {
-                Console.WriteLine($"  - {table.Name} (Label: {table.Label})");
-            }
-
-            // 3. Count any other repeating sections that might be in controls
-            var otherRepeating = allControls
-                .Where(c => c.Type == "RepeatingSection")
-                .ToList();
-            repeatingSectionCount += otherRepeating.Count;
-
-            Console.WriteLine($"Found {otherRepeating.Count} other repeating sections:");
-            foreach (var other in otherRepeating)
-            {
-                Console.WriteLine($"  - {other.Name} (Label: {other.Label})");
-            }
+                .Count();
+            repeatingSectionCount += repeatingTables;
 
             Console.WriteLine($"Total repeating sections/tables: {repeatingSectionCount}");
 
@@ -435,6 +407,7 @@ namespace InfoPathXsnAnalyzer
                 ConditionalFields = formDef.ConditionalVisibility.Keys.ToList()
             };
         }
+
         private void ExtractUsingExpandExe(string cabFile, string destFolder)
         {
             var startInfo = new System.Diagnostics.ProcessStartInfo
@@ -486,7 +459,7 @@ namespace InfoPathXsnAnalyzer
     }
 
     // --------------------------------
-    // Section-Aware Parser - FIXED VERSION
+    // Section-Aware Parser - MODIFIED VERSION
     // --------------------------------
     public class SectionAwareParser
     {
@@ -737,6 +710,10 @@ namespace InfoPathXsnAnalyzer
                 repeatingTable.DisplayName = repeatingTable.Name;
             }
 
+            // MODIFIED: Check if this is within an existing repeating context
+            // If so, it's a nested repeating table that should be treated as its own section
+            var isNestedRepeating = repeatingContextStack.Count > 0;
+
             repeatingTable.Depth = repeatingContextStack.Count;
             repeatingContextStack.Push(repeatingTable);
 
@@ -783,6 +760,12 @@ namespace InfoPathXsnAnalyzer
         private void ProcessSection(XElement elem)
         {
             var section = ExtractSectionInfo(elem);
+
+            // MODIFIED: If this section is conditional-in-repeating, treat it as a normal repeating section
+            if (section.Type == "conditional-in-repeating")
+            {
+                section.Type = "repeating";
+            }
 
             // Look for a better name from recent labels
             var bestLabel = FindBestLabelForSection(elem, section.Name);
@@ -940,6 +923,13 @@ namespace InfoPathXsnAnalyzer
             if (className.Contains("xdRepeatingSection")) type = "repeating";
             if (className.Contains("xdOptional")) type = "optional";
 
+            // MODIFIED: Check if this is conditional within a repeating context
+            // We'll still identify it but later treat it as a normal repeating section
+            if (className.Contains("xdConditional") && repeatingContextStack.Count > 0)
+            {
+                type = "conditional-in-repeating";
+            }
+
             var name = !string.IsNullOrEmpty(caption) ? caption :
                       !string.IsNullOrEmpty(ctrlId) ? ctrlId : "Section";
 
@@ -1054,7 +1044,8 @@ namespace InfoPathXsnAnalyzer
             var className = elem.Attribute("class")?.Value ?? "";
 
             if (className.Contains("xdSection") ||
-                className.Contains("xdRepeatingSection"))
+                className.Contains("xdRepeatingSection") ||
+                className.Contains("xdConditional"))  // ADDED: Also check for conditional sections
                 return true;
 
             var xctname = GetAttributeValue(elem, "xctname");
@@ -1638,7 +1629,7 @@ namespace InfoPathXsnAnalyzer
     }
 
     // --------------------------------
-    // Label-Control Associator
+    // Label-Control Associator (unchanged)
     // --------------------------------
     public class LabelControlAssociator
     {
@@ -1722,7 +1713,7 @@ namespace InfoPathXsnAnalyzer
     }
 
     // --------------------------------
-    // Complex Label Handler
+    // Complex Label Handler (unchanged)
     // --------------------------------
     public class ComplexLabelHandler
     {
@@ -1768,7 +1759,7 @@ namespace InfoPathXsnAnalyzer
     }
 
     // --------------------------------
-    // Dynamic Section Handler
+    // Dynamic Section Handler (unchanged)
     // --------------------------------
     public class DynamicSectionHandler
     {
